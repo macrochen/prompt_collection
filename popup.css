@@ -1,0 +1,206 @@
+body {
+  font-family: Arial, sans-serif;
+  width: 95%; /* 调整整体宽度 */
+  max-width: 1200px; /* 增加最大宽度 */
+  margin: 20px auto;
+  padding: 0;
+  background-color: #f4f4f4;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+
+#main-container {
+  display: flex;
+  height: 80vh; /* 设置一个固定高度，方便布局 */
+}
+
+#prompt-list-container {
+  flex: 1; /* 占据 1/3 宽度 */
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  background-color: #fff;
+  overflow-y: auto; /* 允许滚动 */
+}
+
+#chat-area-container {
+  flex: 2; /* 占据 2/3 宽度 */
+  padding: 20px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-container {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-top: 20px; /* 与标题保持距离 */
+  flex-grow: 1; /* 填充剩余空间 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#messages {
+  height: 400px;
+  overflow-y: auto;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  width: 100%;
+}
+
+
+
+/* 聊天消息样式 */
+.message {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    max-width: 100%;
+    font-size: 16px; /* You can adjust this value */
+    word-wrap: break-word;
+  }
+  
+  /* 用户消息样式 */
+  .user-message {
+    background-color: #e3f2fd; /* 浅蓝色背景 */
+    border-left: 4px solid #2196F3;
+    margin-left: 10px;
+  }
+  
+  /* AI消息样式 */
+  .gemini-message {
+    background-color: #f1f8e9; /* 浅绿色背景 */
+    border-left: 4px solid #8bc34a;
+    margin-right: 10px;
+  }
+  
+  /* 错误消息样式 */
+  .error-message {
+    background-color: #ffebee; /* 浅红色背景 */
+    border-left: 4px solid #f44336;
+  }
+  
+  /* 系统消息样式 */
+  .system-message {
+    background-color: #fff8e1; /* 浅黄色背景 */
+    border-left: 4px solid #ffc107;
+  }
+
+#user-input {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 0;
+  margin-bottom: 8px;
+  font-size: 16px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+#send-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#send-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#send-button:hover {
+  background-color: #0056b3;
+}
+
+#prompt-file-input,
+#load-prompts-button,
+#copy-selected-prompts-button, /* Add this line */
+#clear-prompts-button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+#load-prompts-button,
+#copy-selected-prompts-button, /* Add this line */
+#clear-prompts-button {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+#load-prompts-button:hover,
+#copy-selected-prompts-button:hover, /* Add this line */
+#clear-prompts-button:hover {
+  background-color: #218838;
+}
+
+#clear-prompts-button {
+  background-color: #dc3545;
+}
+
+#clear-prompts-button:hover {
+  background-color: #c82333;
+}
+
+/* Prompt Checkbox List Styles */
+#prompt-checkbox-list {
+  margin-top: 10px;
+}
+
+.prompt-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.prompt-item label {
+  margin-left: 5px;
+  cursor: pointer;
+  flex-grow: 1;
+  font-size: 16px; /* Adjust this value as needed */
+}
+
+.prompt-item label:hover {
+  text-decoration: underline;
+}
+
+/* Tooltip for prompt content */
+#prompt-tooltip {
+  position: absolute;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: pre-wrap; /* Add this line to preserve whitespace and enable wrapping */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#prompt-tooltip.hidden {
+  display: none;
+}

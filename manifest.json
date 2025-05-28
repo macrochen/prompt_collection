@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Gemini Prompt Chat",
+  "version": "1.0",
+  "description": "A Chrome extension for Gemini chat with custom prompts.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html?isPopup=true",
+    "default_icon": {
+      "16": "images/image.png",
+      "32": "images/image.png",
+      "48": "images/image.png",
+      "128": "images/image.png"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "images/image.png",
+    "32": "images/image.png",
+    "48": "images/image.png",
+    "128": "images/image.png"
+  }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gemini Prompt Chat</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="main-container">
+    <div id="prompt-list-container">
+      <h2>Manage Prompts</h2>
+      <input type="file" id="prompt-file-input" accept=".txt,.md" multiple>
+      <button id="load-prompts-button">Load Prompts</button>
+      <div id="prompt-checkbox-list"></div>
+      <button id="copy-selected-prompts-button">Copy Selected Prompts</button> <!-- Add this line -->
+      <button id="clear-prompts-button">Clear All Prompts</button>
+      <div id="prompt-tooltip" class="hidden"></div>
+    </div>
+    <div id="chat-area-container">
+      <div id="chat-container">
+        <div id="messages"></div>
+        <textarea id="user-input" placeholder="Type your message..."></textarea>
+        <div id="send-button-container">
+          <button id="send-button">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+  <script src="lib/marked.min.js"></script>
+</body>
+</html>
