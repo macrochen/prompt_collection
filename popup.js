@@ -1,3 +1,73 @@
+
+let storedPrompts = {}; // 将此行移动到文件顶部，或者至少在所有需要使用它的函数外部
+
+
+// Function to save prompts to Chrome storage
+function savePromptsToStorage() {
+  chrome.storage.local.set({ prompts: storedPrompts });
+}
+
+
+// Update the prompt checkbox list
+function updatePromptSelect() {
+  const promptCheckboxList = document.getElementById('prompt-checkbox-list');
+  const promptTooltip = document.getElementById('prompt-tooltip');
+  const userInput = document.getElementById('user-input');
+  promptCheckboxList.innerHTML = ''; // Clear existing list
+  for (const name in storedPrompts) {
+    const promptItemDiv = document.createElement('div');
+    promptItemDiv.classList.add('prompt-item');
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `prompt-${name}`;
+    checkbox.value = name;
+    checkbox.dataset.content = storedPrompts[name]; // Store content in a data attribute
+
+    const label = document.createElement('label');
+    label.htmlFor = `prompt-${name}`;
+    label.textContent = name;
+
+    // 新增编辑按钮
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.classList.add('edit-prompt-button'); // 添加类名方便样式控制
+    editButton.dataset.promptName = name; // 存储提示词名称
+
+    promptItemDiv.appendChild(checkbox);
+    promptItemDiv.appendChild(label);
+    promptItemDiv.appendChild(editButton); // 将编辑按钮添加到条目中
+    promptCheckboxList.appendChild(promptItemDiv);
+  
+    // Add event listeners for tooltip
+    label.addEventListener('mouseover', (e) => {
+      promptTooltip.textContent = checkbox.dataset.content;
+      promptTooltip.style.left = `${e.pageX + 10}px`;
+      promptTooltip.style.top = `${e.pageY + 10}px`;
+      promptTooltip.classList.remove('hidden');
+    });
+  
+    label.addEventListener('mouseout', () => {
+      promptTooltip.classList.add('hidden');
+    });
+  }
+
+  // 为所有编辑按钮添加事件监听器
+  document.querySelectorAll('.edit-prompt-button').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const promptName = event.target.dataset.promptName;
+      const promptContent = storedPrompts[promptName];
+
+      // 填充模态框
+      document.getElementById('prompt-title').value = promptName;
+      document.getElementById('prompt-content').value = promptContent;
+      document.getElementById('new-prompt-modal').style.display = 'block';
+      // 可以在这里添加一个隐藏字段来标记当前是编辑模式，并存储原始名称
+      document.getElementById('prompt-title').dataset.originalName = promptName; 
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // 检查当前页面是否是作为扩展程序的弹出窗口加载的
   // 只有当点击扩展程序图标时，才会执行这里的逻辑
@@ -13,15 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const promptFileInput = document.getElementById('prompt-file-input');
   const loadPromptsButton = document.getElementById('load-prompts-button');
   const promptCheckboxList = document.getElementById('prompt-checkbox-list');
-  const promptTooltip = document.getElementById('prompt-tooltip');
   const clearPromptsButton = document.getElementById('clear-prompts-button');
   const copySelectedPromptsButton = document.getElementById('copy-selected-prompts-button'); // Add this line
   const copySuccessMessage = document.getElementById('copy-success-message');
 
   // Replace with your actual Gemini API Key
   // const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; 
-
-  let storedPrompts = {}; // { 'prompt_name': 'prompt_content' }
 
   // Function to display messages in the chat interface
   function displayMessage(sender, message) {
@@ -184,86 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Save prompts to Chrome storage
-  function savePromptsToStorage() {
-    chrome.storage.local.set({ prompts: storedPrompts });
-  }
-
-  // Update the prompt checkbox list
-  function updatePromptSelect() {
-    promptCheckboxList.innerHTML = ''; // Clear existing list
-    for (const name in storedPrompts) {
-      const promptItemDiv = document.createElement('div');
-      promptItemDiv.classList.add('prompt-item');
-  
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = `prompt-${name}`;
-      checkbox.value = name;
-  
-      // Add change event listener to the checkbox
-      checkbox.addEventListener('change', (event) => {
-          const promptContent = storedPrompts[name];
-          if (event.target.checked) {
-              // Add prompt content to userInput
-              if (!userInput.value.includes(promptContent)) {
-                  userInput.value += (userInput.value ? '\n\n' : '') + promptContent;
-              }
-          } else {
-              // Remove prompt content from userInput
-              userInput.value = userInput.value.replace(promptContent, '').trim();
-              // Clean up extra newlines if any
-              userInput.value = userInput.value.replace(/\n\n\n/g, '\n\n');
-          }
-      });
-  
-      const label = document.createElement('label');
-      label.htmlFor = `prompt-${name}`;
-      label.textContent = name;
-
-      // Remove the direct copy on checkbox change
-      // checkbox.addEventListener('change', (event) => {
-      //   if (event.target.checked) {
-      //     const selectedPromptName = event.target.value;
-      //     if (storedPrompts[selectedPromptName]) {
-      //       navigator.clipboard.writeText(storedPrompts[selectedPromptName])
-      //         .then(() => {
-      //           console.log(`Prompt '${selectedPromptName}' copied to clipboard.`);
-      //           setTimeout(() => {
-      //             event.target.checked = false;
-      //           }, 500);
-      //         })
-      //         .catch(err => {
-      //           console.error('Failed to copy prompt: ', err);
-      //           alert('Failed to copy prompt to clipboard.');
-      //           event.target.checked = false; // Uncheck on failure
-      //         });
-      //     }
-      //   }
-      // });
-
-      // Event listeners for tooltip (mouseover/mouseout)
-      label.addEventListener('mouseover', (event) => {
-        const promptName = event.target.textContent;
-        if (storedPrompts[promptName]) {
-          // Replace newlines with <br> tags for proper display in HTML
-          promptTooltip.innerHTML = storedPrompts[promptName].replace(/\n/g, '<br>');
-          promptTooltip.classList.remove('hidden');
-          // Position the tooltip near the mouse or label
-          promptTooltip.style.left = `${event.pageX + 10}px`;
-          promptTooltip.style.top = `${event.pageY + 10}px`;
-        }
-      });
-
-      label.addEventListener('mouseout', () => {
-        promptTooltip.classList.add('hidden');
-      });
-
-      promptItemDiv.appendChild(checkbox);
-      promptItemDiv.appendChild(label);
-      promptCheckboxList.appendChild(promptItemDiv);
-    }
-  }
 
   // Event listener for loading prompts from file
   loadPromptsButton.addEventListener('click', () => {
@@ -347,3 +334,71 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial load of prompts when popup opens
   loadPromptsFromStorage();
 });
+
+
+  const newPromptButton = document.getElementById('new-prompt-button');
+  const newPromptModal = document.getElementById('new-prompt-modal');
+  const closeButton = newPromptModal.querySelector('.close-button');
+  const savePromptButton = document.getElementById('save-prompt-button');
+  const resetPromptButton = document.getElementById('reset-prompt-button');
+  const cancelPromptButton = document.getElementById('cancel-prompt-button');
+  const promptTitleInput = document.getElementById('prompt-title');
+  const promptContentTextarea = document.getElementById('prompt-content');
+
+  // Show new prompt modal
+  newPromptButton.addEventListener('click', () => {
+    newPromptModal.style.display = 'block';
+    promptTitleInput.value = ''; // Clear previous input
+    promptContentTextarea.value = ''; // Clear previous input
+  });
+
+  // Hide modal when close button is clicked
+  closeButton.addEventListener('click', () => {
+    newPromptModal.style.display = 'none';
+  });
+
+  // Hide modal when clicking outside of it
+  window.addEventListener('click', (event) => {
+    if (event.target == newPromptModal) {
+      newPromptModal.style.display = 'none';
+    }
+  });
+
+  // Add keyboard event listener for Escape key
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && newPromptModal.style.display === 'block') {
+      newPromptModal.style.display = 'none';
+    }
+  });
+
+  // Save prompt logic
+  savePromptButton.addEventListener('click', () => {
+    const title = promptTitleInput.value.trim();
+    const content = promptContentTextarea.value.trim();
+    const originalName = promptTitleInput.dataset.originalName; // 获取原始名称
+
+    if (title && content) {
+      if (originalName && originalName !== title) {
+        // 如果名称改变了，删除旧的提示词
+        delete storedPrompts[originalName];
+      }
+      storedPrompts[title] = content;
+      savePromptsToStorage();
+      updatePromptSelect();
+      newPromptModal.style.display = 'none';
+      promptTitleInput.dataset.originalName = ''; // 清除标记
+    } else {
+      alert('Prompt title and content cannot be empty.');
+    }
+  });
+
+  // Reset prompt form
+  resetPromptButton.addEventListener('click', () => {
+    promptTitleInput.value = '';
+    promptContentTextarea.value = '';
+  });
+
+  // Cancel prompt creation
+  cancelPromptButton.addEventListener('click', () => {
+    newPromptModal.style.display = 'none';
+  });

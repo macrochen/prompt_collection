@@ -2,16 +2,18 @@
 <html>
 <head>
   <title>Gemini Prompt Chat</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div id="main-container">
     <div id="prompt-list-container">
       <h2>Manage Prompts</h2>
+      <button id="new-prompt-button">New Prompt</button> <!-- New button added here -->
       <input type="file" id="prompt-file-input" accept=".txt,.md" multiple>
       <button id="load-prompts-button">Load Prompts</button>
       <div id="prompt-checkbox-list"></div>
-      <button id="copy-selected-prompts-button">Copy Selected Prompts</button> <!-- Add this line -->
+      <button id="copy-selected-prompts-button">Copy Selected Prompts</button>
       <button id="clear-prompts-button">Clear All Prompts</button>
       <div id="prompt-tooltip" class="hidden"></div>
     </div>
@@ -26,7 +28,24 @@
     </div>
   </div>
 
-  <script src="popup.js"></script>
+  <!-- New Prompt Modal Structure -->
+  <div id="new-prompt-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h3>Create New Prompt</h3>
+      <label for="prompt-title">Title:</label>
+      <input type="text" id="prompt-title" placeholder="Enter prompt title">
+      <label for="prompt-content">Content:</label>
+      <textarea id="prompt-content" placeholder="Enter prompt content"></textarea>
+      <div class="modal-buttons">
+        <button id="save-prompt-button">Save</button>
+        <button id="reset-prompt-button">Reset</button>
+        <button id="cancel-prompt-button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js" charset="UTF-8"></script>
   <script src="lib/marked.min.js"></script>
 </body>
 </html>

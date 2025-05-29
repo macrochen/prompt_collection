@@ -1,0 +1,24 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+build/
+
+# Chrome Extension specific
+*.zip
+*.crx
+
+# Local development files
+.env
+.DS_Store
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Log files
+*.log

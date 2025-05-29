@@ -198,9 +198,166 @@ h1, h2 {
   max-width: 300px;
   word-wrap: break-word;
   white-space: pre-wrap; /* Add this line to preserve whitespace and enable wrapping */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Add styles for sender info */
+.sender-info {
+  font-weight: bold;
+  margin-bottom: 5px; /* Add some space below the sender info */
 }
 
 #prompt-tooltip.hidden {
   display: none;
+}
+
+
+/* Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 500px;
+  border-radius: 10px;
+  position: relative;
+}
+
+/* The Close Button */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal Form Elements */
+.modal-content label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.modal-content input[type="text"],
+.modal-content textarea {
+  width: calc(100% - 22px); /* Adjust for padding and border */
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.modal-content textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.modal-buttons {
+  text-align: right;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#new-prompt-button {
+  background-color: #28a745; /* 使用与“Load Prompts”按钮相似的绿色 */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box; /* 确保内边距和边框包含在宽度内 */
+}
+
+#new-prompt-button:hover {
+  background-color: #218838;
+}
+
+#reset-prompt-button {
+  background-color: #ffc107;
+  color: white;
+}
+
+#reset-prompt-button:hover {
+  background-color: #e0a800;
+}
+
+#cancel-prompt-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+#save-prompt-button {
+  background-color: #218838;
+  color: white;
+}
+
+#save-prompt-button:hover {
+  background-color: #327942;
+}
+
+#cancel-prompt-button:hover {
+  background-color: #5a6268;
+}
+
+.edit-prompt-button {
+  background-color: #007bff; /* 蓝色 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px; /* 与标签的间距 */
+}
+
+.edit-prompt-button:hover {
+  background-color: #0056b3;
+}
+
+.prompt-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  justify-content: space-between; /* 使内容和按钮两端对齐 */
+}
+
+.prompt-item label {
+  flex-grow: 1; /* 让标签占据更多空间 */
+  margin-right: 10px; /* 标签和按钮之间的间距 */
 }
