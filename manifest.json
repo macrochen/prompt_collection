@@ -4,6 +4,7 @@
   "version": "1.0",
   "description": "A Chrome extension for Gemini chat with custom prompts.",
   "permissions": [
+    "clipboardRead",
     "storage"
   ],
   "action": {

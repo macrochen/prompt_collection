@@ -21,6 +21,7 @@ function updatePromptSelect() {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `prompt-${name}`;
+    checkbox.classList.add('prompt-checkbox');
     checkbox.value = name;
     checkbox.dataset.content = storedPrompts[name]; // Store content in a data attribute
 
@@ -280,11 +281,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Event listener for clearing all prompts
   clearPromptsButton.addEventListener('click', () => {
-    if (confirm('Are you sure you want to clear all stored prompts?')) {
-      storedPrompts = {};
-      savePromptsToStorage();
-      updatePromptSelect();
-      alert('All prompts cleared.');
+    const checkedPrompts = document.querySelectorAll('.prompt-checkbox:checked');
+    if (checkedPrompts.length === 0) {
+        alert('请先选择要删除的提示词');
+        return;
+    }
+
+    if (confirm(`确定要删除选中的 ${checkedPrompts.length} 个提示词吗？`)) {
+        checkedPrompts.forEach(checkbox => {
+            const promptName = checkbox.dataset.name || checkbox.value;
+            delete storedPrompts[promptName];
+        });
+        savePromptsToStorage();
+        updatePromptSelect();
+        alert('已删除选中的提示词');
     }
   });
 
@@ -333,6 +343,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial load of prompts when popup opens
   loadPromptsFromStorage();
+
+  document.getElementById('prompt-checkbox-list').addEventListener('change', async function(event) {
+    if (event.target.matches('.prompt-checkbox')) {
+        const checkbox = event.target;
+        const chatInput = document.getElementById('user-input');
+        if (checkbox.checked) {
+          const promptContent = checkbox.dataset.content;
+          const promptName = checkbox.dataset.name || checkbox.value;
+          
+          if (promptName.includes('[x]')) {
+              try {
+                  console.log('尝试读取剪贴板前，文档是否有焦点:', document.hasFocus());
+                  // 读取剪贴板内容
+                  const clipboardText = await navigator.clipboard.readText();
+                  // 组合提示词和剪贴板内容
+                  chatInput.value = `${promptContent}\n\n${clipboardText}`;
+              } catch (err) {
+                  console.error('读取剪贴板失败:', err);
+                  chatInput.value = promptContent;
+              }
+          } else {
+              chatInput.value = promptContent;
+          }
+          
+          // 取消选中状态，以便下次还能选择
+          // this.checked = false;
+          // 聚焦到输入框
+          chatInput.focus();
+        }else{
+          // 如果取消选中，清空输入框
+          chatInput.value = '';
+        }
+    }
+  });
 });
 
 
@@ -345,6 +389,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const promptTitleInput = document.getElementById('prompt-title');
   const promptContentTextarea = document.getElementById('prompt-content');
 
+  const exportPromptsButton = document.getElementById('export-prompts-button');
+  // 导出选中的提示词
+  exportPromptsButton.addEventListener('click', async () => {
+    const checkedPrompts = document.querySelectorAll('.prompt-checkbox:checked');
+    if (checkedPrompts.length === 0) {
+        alert('请先选择要导出的提示词');
+        return;
+    }
+
+    try {
+        // 1. 让用户选择一个目录
+        const directoryHandle = await window.showDirectoryPicker();
+
+        // 2. 遍历选中的提示词并导出到所选目录
+        for (const checkbox of checkedPrompts) {
+            const promptName = checkbox.dataset.name || checkbox.value;
+            // 确保 storedPrompts 已经定义并且包含了提示词的内容
+            // 例如: const storedPrompts = { "我的提示1": "这是提示1的内容", "我的提示2": "这是提示2的内容" };
+            const promptContent = storedPrompts[promptName];
+            const fileName = `${promptName}.md`;
+
+            // 3. 在选定的目录中创建或获取文件句柄
+            // 第二个参数 { create: true } 表示如果文件不存在则创建它
+            const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
+
+            // 4. 写入文件
+            const writable = await fileHandle.createWritable();
+            await writable.write(promptContent); // 确保 promptContent 是字符串或 BufferSource
+            await writable.close();
+        }
+        alert(`已成功导出 ${checkedPrompts.length} 个提示词到指定目录`);
+
+    } catch (error) {
+        // 用户可能取消了目录选择 (会抛出 AbortError) 或发生其他错误
+        if (error.name === 'AbortError') {
+            console.log('用户取消了目录选择。');
+            // 可以选择性地给用户一个提示，或者什么都不做
+            // alert('导出操作已取消');
+        } else {
+            console.error('导出提示词时发生错误:', error);
+            alert('导出提示词时发生错误，请查看控制台获取详细信息');
+        }
+    }
+  });
+  
   // Show new prompt modal
   newPromptButton.addEventListener('click', () => {
     newPromptModal.style.display = 'block';

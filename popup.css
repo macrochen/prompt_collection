@@ -132,7 +132,8 @@ h1, h2 {
 #prompt-file-input,
 #load-prompts-button,
 #copy-selected-prompts-button, /* Add this line */
-#clear-prompts-button {
+#clear-prompts-button, /* Add this line */
+#export-prompts-button {
   width: 100%;
   padding: 10px;
   margin-bottom: 12px;
@@ -144,7 +145,8 @@ h1, h2 {
 
 #load-prompts-button,
 #copy-selected-prompts-button, /* Add this line */
-#clear-prompts-button {
+#clear-prompts-button, /* Add this line */
+#export-prompts-button {
   background-color: #28a745;
   color: white;
   cursor: pointer;
@@ -153,7 +155,7 @@ h1, h2 {
 
 #load-prompts-button:hover,
 #copy-selected-prompts-button:hover, /* Add this line */
-#clear-prompts-button:hover {
+#export-prompts-button:hover{
   background-color: #218838;
 }
 
